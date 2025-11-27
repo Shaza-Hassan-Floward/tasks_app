@@ -31,23 +31,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Home")),
-      body: Column(
-        children: [
-          TextButton(onPressed: (){
-            context.go("/settings");
-          }, child: const Text("Go to Setting")),
-          // ListView.builder(
-          //     itemCount: tasks.length,
-          //     itemBuilder: (_, index) => Column(
-          //           crossAxisAlignment: CrossAxisAlignment.start,
-          //           children: [
-          //             Text(tasks[index].title),
-          //             Space.hSm,
-          //             Text(tasks[index].description)
-          //           ],
-          //         )),
-        ],
-      ),
+      body: ListView.builder(
+          itemCount: tasks.length,
+          itemBuilder: (_, index) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(tasks[index].title),
+                  Space.hSm,
+                  Text(tasks[index].description)
+                ],
+              )),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async {
