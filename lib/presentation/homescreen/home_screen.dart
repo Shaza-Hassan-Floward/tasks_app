@@ -1,51 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/space/space.dart';
-import '../../data/repository/task_repository_impl.dart';
-import '../../domain/entities/task.dart';
+import '../bloc/tasks_bloc.dart';
 
-class HomeScreen extends StatefulWidget {
+
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final repo = TaskRepositoryImpl();
-  List<TaskEntity> tasks = [];
-
-  @override
-  void initState() {
-    super.initState();
-    loadTasks();
-  }
-
-  Future<void> loadTasks() async {
-    tasks = await repo.fetchTasks();
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Home")),
-      body: ListView.builder(
-          itemCount: tasks.length,
-          itemBuilder: (_, index) => Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(tasks[index].title),
-                  Space.hSm,
-                  Text(tasks[index].description)
-                ],
-              )),
+      body: BlocBuilder<TasksBloc, TasksState>(
+        builder: (context, state) {
+          if (state is TasksLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is TasksError) {
+            return Center(child: Text(state.message));
+          }
+          if (state is TasksLoaded) {
+            final tasks = state.tasks;
+
+            if (tasks.isEmpty) {
+              return const Center(child: Text("No tasks yet"));
+            }
+
+            return ListView.builder(
+              itemCount: tasks.length,
+              itemBuilder: (_, index) {
+                final task = tasks[index];
+                return Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(task.title),
+                      Space.hXs,
+                      Text(task.description),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
-        onPressed: () async {
+        onPressed: ()  {
           context.go("/home/add-task");
-          loadTasks(); // refresh after returning
         },
       ),
     );

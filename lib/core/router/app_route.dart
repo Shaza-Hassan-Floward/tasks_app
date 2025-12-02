@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tasks_app/presentation/add_task_screen/add_task_screen.dart';
-import 'package:tasks_app/presentation/settingscreen/setting_screen.dart';
 
+import '../../data/repository/task_repository_impl.dart';
+import '../../domain/usecase/add_task_usecase.dart';
+import '../../domain/usecase/fetch_tasks_usecase.dart';
+import '../../domain/usecase/update_task_usecase.dart';
+import '../../presentation/add_task_screen/add_task_screen.dart';
+import '../../presentation/bloc/tasks_bloc.dart';
 import '../../presentation/homescreen/home_screen.dart';
+import '../../presentation/settingscreen/setting_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _settingsNavigatorKey = GlobalKey<NavigatorState>();
@@ -69,10 +75,6 @@ class ScaffoldWithNavbar extends StatelessWidget {
   void _onTap(index) {
     navigationShell.goBranch(
       index,
-// A common pattern when using bottom navigation bars is to support
-// navigating to the initial location when tapping the item that is
-// already active. This example demonstrates how to support this behavior,
-// using the initialLocation parameter of goBranch.
       initialLocation: index == navigationShell.currentIndex,
     );
   }

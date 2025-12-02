@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tasks_app/core/router/app_route.dart';
 
 import '../../core/space/app_space.dart';
 import '../../core/space/space.dart';
-import 'add_task_viewmodel.dart';
+import '../bloc/tasks_bloc.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -14,7 +17,6 @@ class AddTaskScreen extends StatefulWidget {
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
   final _formKey = GlobalKey<FormState>();
-  final vm = AddTaskViewModel();
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
 
@@ -71,16 +73,19 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               Space.hXl,
               TextButton(
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
+                    if (!_formKey.currentState!.validate()) return;
+
                       if (kDebugMode) {
                         print("Title: ${titleController.text}");
                         print("Description: ${descriptionController.text}");
                       }
-                      vm.addTask(
-                          title: titleController.text,
-                          description: descriptionController.text);
-                      Navigator.pop(context);
-                    }
+
+                      context.read<TasksBloc>().add(AddTaskEvent(
+                        title: titleController.text,
+                        description: descriptionController.text,
+                      ));
+
+                      context.pop();
                   },
                   child: const Text("Add task"))
             ],

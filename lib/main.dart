@@ -2,13 +2,30 @@
 import 'package:app_links/app_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tasks_app/core/theme/app_theme.dart';
 
 import 'core/router/app_route.dart';
+import 'data/repository/task_repository_impl.dart';
+import 'domain/usecase/add_task_usecase.dart';
+import 'domain/usecase/fetch_tasks_usecase.dart';
+import 'domain/usecase/update_task_usecase.dart';
+import 'presentation/bloc/tasks_bloc.dart';
 
 void main() {
-  runApp(const MyApp());
+  final repo = TaskRepositoryImpl();
+
+  runApp(
+    BlocProvider(
+      create: (_) => TasksBloc(
+        addTaskUseCase: AddTaskUseCase(repo),
+        fetchTasksUseCase: FetchTasksUseCase(repo),
+        updateTaskUseCase: UpdateTaskUseCase(repo),
+      )..add(LoadTasksEvent()),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
