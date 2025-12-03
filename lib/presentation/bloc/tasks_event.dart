@@ -22,3 +22,8 @@ final class UpdateTaskEvent extends TasksEvent {
 
   UpdateTaskEvent(this.task);
 }
+
+class LoadSingleTaskEvent extends TasksEvent {
+  final String id;
+  LoadSingleTaskEvent(this.id);
+}

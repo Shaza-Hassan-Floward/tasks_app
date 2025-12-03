@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tasks_app/presentation/task_details/task_details_screen_by_task_id.dart';
 
-import '../../data/repository/task_repository_impl.dart';
-import '../../domain/usecase/add_task_usecase.dart';
-import '../../domain/usecase/fetch_tasks_usecase.dart';
-import '../../domain/usecase/update_task_usecase.dart';
+import '../../domain/entities/task.dart';
 import '../../presentation/add_task_screen/add_task_screen.dart';
 import '../../presentation/bloc/tasks_bloc.dart';
 import '../../presentation/homescreen/home_screen.dart';
 import '../../presentation/settingscreen/setting_screen.dart';
+import '../../presentation/task_details/task_details_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _settingsNavigatorKey = GlobalKey<NavigatorState>();
@@ -33,7 +32,24 @@ final _routes = GoRouter(
                       GoRoute(
                           path: "add-task",
                           name: "add-task",
-                          builder: (context, state) => const AddTaskScreen())
+                          builder: (context, state) => const AddTaskScreen()),
+                      // GoRoute(
+                      //     path: "details",
+                      //     name: "task-details",
+                      //     builder: (context, state) {
+                      //       final task = state.extra as TaskEntity;
+                      //       return TaskDetailsScreen(taskEntity: task);
+                      //     }),
+                      GoRoute(
+                          path: "details/:id",
+                          name: "task-details",
+                          builder: (context, state) {
+                            final id = state.pathParameters['id']!;
+                            return BlocProvider.value(
+                              value: context.read<TasksBloc>(),
+                              child: TaskDetailsScreenByTaskId(taskId: id),
+                            );
+                          })
                     ])
               ],
             ),

@@ -9,8 +9,8 @@ class TasksInitial extends TasksState {
   const TasksInitial();
 }
 
-class TasksLoading extends TasksState {
-  const TasksLoading();
+class Loading extends TasksState {
+  const Loading();
 }
 
 class TasksLoaded extends TasksState {
@@ -23,4 +23,13 @@ class TasksError extends TasksState {
   final String message;
 
   const TasksError(this.message);
+}
+
+class TaskDetailLoaded extends TasksState {
+  final TaskEntity task;
+  TaskDetailLoaded(this.task);
+}
+class TaskDetailError extends TasksState {
+  final String message;
+  TaskDetailError(this.message);
 }

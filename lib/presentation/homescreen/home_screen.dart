@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(title: const Text("Home")),
       body: BlocBuilder<TasksBloc, TasksState>(
         builder: (context, state) {
-          if (state is TasksLoading) {
+          if (state is Loading) {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is TasksError) {
@@ -34,16 +34,35 @@ class HomeScreen extends StatelessWidget {
                 final task = tasks[index];
                 return Padding(
                   padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(task.title),
-                      Space.hXs,
-                      Text(task.description),
-                    ],
+                  child: InkWell(
+                    onTap: () {
+                      // context.go("/home/details", extra: task); // send whole object
+
+                      // context.go("/home/details/${task.id}"); // navigate by id send in path
+
+                      // context.goNamed(
+                      //   "task-details",
+                      //   pathParameters: {"id": task.id},
+                      // ); // navigate by name and Id send in the path
+
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      width: double.infinity, // Ensures full width tap area
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(task.title),
+                          Space.hXs,
+                          Text(task.description),
+                        ],
+                      ),
+                    ),
                   ),
                 );
               },
+              
             );
           }
           return const SizedBox.shrink();

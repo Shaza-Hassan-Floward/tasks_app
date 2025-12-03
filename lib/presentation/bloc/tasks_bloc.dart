@@ -21,11 +21,12 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
     on<LoadTasksEvent>(_onLoadTasks);
     on<AddTaskEvent>(_onAddTask);
     on<UpdateTaskEvent>(_onUpdateTask);
+    on<LoadSingleTaskEvent>(_onLoadSingleTask);
   }
 
   Future<void> _onLoadTasks(
       LoadTasksEvent event, Emitter<TasksState> emit) async {
-    emit(const TasksLoading());
+    emit(const Loading());
     try {
       final tasks = await fetchTasksUseCase();
       await Future.delayed(const Duration(seconds: 1));
@@ -37,7 +38,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
 
   Future<void> _onAddTask(
       AddTaskEvent event, Emitter<TasksState> emit) async {
-    emit(const TasksLoading());
+    emit(const Loading());
     try {
       await addTaskUseCase(event.task);
       await Future.delayed(const Duration(seconds: 1));
@@ -51,7 +52,7 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
 
   Future<void> _onUpdateTask(
       UpdateTaskEvent event, Emitter<TasksState> emit) async {
-    emit(const TasksLoading());
+    emit(const Loading());
     try {
       await updateTaskUseCase(event.task);
       await Future.delayed(const Duration(seconds: 1));
@@ -60,6 +61,26 @@ class TasksBloc extends Bloc<TasksEvent, TasksState> {
       emit(TasksLoaded(updatedTasks));
     } catch (e) {
       emit(TasksError(e.toString()));
+    }
+  }
+
+  Future<void> _onLoadSingleTask(
+      LoadSingleTaskEvent event,
+      Emitter<TasksState> emit,
+      ) async {
+    emit(const Loading());
+
+    try {
+      // Option A — if repository has fetchById()
+      // final task = await fetchSingleTaskUseCase(event.id);
+
+      // Option B — reuse all tasks (local only)
+      final all = await fetchTasksUseCase();
+      final task = all.firstWhere((t) => t.id == event.id);
+
+      emit(TaskDetailLoaded(task));
+    } catch (e) {
+      emit(TaskDetailError(e.toString()));
     }
   }
 }
