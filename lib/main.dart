@@ -6,23 +6,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tasks_app/core/theme/app_theme.dart';
 
+import 'core/di/service_locator.dart';
 import 'core/router/app_route.dart';
-import 'data/repository/task_repository_impl.dart';
-import 'domain/usecase/add_task_usecase.dart';
-import 'domain/usecase/fetch_tasks_usecase.dart';
-import 'domain/usecase/update_task_usecase.dart';
 import 'presentation/bloc/tasks_bloc.dart';
 
-void main() {
-  final repo = TaskRepositoryImpl();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await initDependencies();
 
   runApp(
     BlocProvider(
-      create: (_) => TasksBloc(
-        addTaskUseCase: AddTaskUseCase(repo),
-        fetchTasksUseCase: FetchTasksUseCase(repo),
-        updateTaskUseCase: UpdateTaskUseCase(repo),
-      )..add(LoadTasksEvent()),
+      create: (_) => sl<TasksBloc>()..add(LoadTasksEvent()),
       child: const MyApp(),
     ),
   );

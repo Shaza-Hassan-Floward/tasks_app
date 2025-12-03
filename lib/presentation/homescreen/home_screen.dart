@@ -38,7 +38,7 @@ class HomeScreen extends StatelessWidget {
                     onTap: () {
                       // context.go("/home/details", extra: task); // send whole object
 
-                      // context.go("/home/details/${task.id}"); // navigate by id send in path
+                      context.go("/home/details/${task.id}"); // navigate by id send in path
 
                       // context.goNamed(
                       //   "task-details",
