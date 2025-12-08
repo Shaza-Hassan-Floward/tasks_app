@@ -1,21 +1,31 @@
 class TaskEntity {
-  final String id;
-  final String title;
-  final String description;
+  final int id;            // DummyJSON uses int IDs
+  final String title;      // maps from "todo"
+  final String? description; // optional for your UI
   final bool isCompleted;
-  final DateTime? dueDate;
-  final TaskPriority priority;
-  final bool hasDueDate;
+  final int userId;
 
-  TaskEntity({
+  const TaskEntity({
     required this.id,
     required this.title,
-    required this.description,
-    this.isCompleted = false,
-    this.dueDate,
-    this.priority = TaskPriority.medium,
-    this.hasDueDate = false,
+    this.description,
+    required this.isCompleted,
+    required this.userId,
   });
-}
 
-enum TaskPriority { low, medium, high }
+  TaskEntity copyWith({
+    int? id,
+    String? title,
+    String? description,
+    bool? isCompleted,
+    int? userId,
+  }) {
+    return TaskEntity(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      isCompleted: isCompleted ?? this.isCompleted,
+      userId: userId ?? this.userId,
+    );
+  }
+}

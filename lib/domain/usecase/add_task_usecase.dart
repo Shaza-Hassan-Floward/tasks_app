@@ -3,11 +3,11 @@ import 'package:tasks_app/domain/entities/task.dart';
 import '../repo/task_repository.dart';
 
 class AddTaskUseCase {
-  final TaskRepository taskRepository;
+  final TaskRepository repository;
 
-  AddTaskUseCase(this.taskRepository);
+  AddTaskUseCase(this.repository);
 
-  Future<void> call(TaskEntity task) async {
-    await taskRepository.addTask(task);
+  Future<TaskEntity> call(TaskEntity task) {
+    return repository.addTask(task);
   }
 }

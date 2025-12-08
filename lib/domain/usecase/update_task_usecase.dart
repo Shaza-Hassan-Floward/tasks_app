@@ -1,13 +1,13 @@
 
+import '../entities/task.dart';
 import '../repo/task_repository.dart';
 
 class UpdateTaskUseCase {
-  final TaskRepository taskRepository;
+  final TaskRepository repository;
 
-  UpdateTaskUseCase(this.taskRepository);
+  UpdateTaskUseCase(this.repository);
 
-  Future<void> call(task) async {
-    await taskRepository.updateTask(task);
+  Future<TaskEntity> call(TaskEntity task) {
+    return repository.updateTask(task);
   }
-
 }

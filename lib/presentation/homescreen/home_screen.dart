@@ -55,7 +55,7 @@ class HomeScreen extends StatelessWidget {
                         children: [
                           Text(task.title),
                           Space.hXs,
-                          Text(task.description),
+                          Text(task.description ?? ""),
                         ],
                       ),
                     ),

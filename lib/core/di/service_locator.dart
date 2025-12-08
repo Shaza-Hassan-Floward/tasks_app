@@ -1,43 +1,59 @@
 
-import 'dart:ffi';
-
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../data/data_source/tasks_remote_data_source.dart';
 import '../../data/repository/task_repository_impl.dart';
 import '../../domain/repo/task_repository.dart';
 import '../../domain/usecase/add_task_usecase.dart';
+import '../../domain/usecase/delete_task_usecase.dart';
 import '../../domain/usecase/fetch_tasks_usecase.dart';
+import '../../domain/usecase/get_task_usecase.dart';
 import '../../domain/usecase/update_task_usecase.dart';
 import '../../presentation/bloc/tasks_bloc.dart';
+import '../network/dio_client.dart';
 
 final sl = GetIt.instance;
 
 Future<void> initDependencies() async {
+  // Dio
+  sl.registerLazySingleton<Dio>(() => createDioClient());
 
+  // Data sources
+  sl.registerLazySingleton<TasksRemoteDataSource>(
+        () => TasksRemoteDataSource(sl<Dio>()),
+  );
+
+  // Repository
   sl.registerLazySingleton<TaskRepository>(
-        () => TaskRepositoryImpl(),
+        () => TaskRepositoryImpl(remote: sl<TasksRemoteDataSource>()),
   );
 
-  // 2) Use cases
-  sl.registerLazySingleton<AddTaskUseCase>(
-        () => AddTaskUseCase(sl()),
-  );
-
+  // Use cases
   sl.registerLazySingleton<FetchTasksUseCase>(
-        () => FetchTasksUseCase(sl()),
+        () => FetchTasksUseCase(sl<TaskRepository>()),
   );
-
+  sl.registerLazySingleton<GetTaskUseCase>(
+        () => GetTaskUseCase(sl<TaskRepository>()),
+  );
+  sl.registerLazySingleton<AddTaskUseCase>(
+        () => AddTaskUseCase(sl<TaskRepository>()),
+  );
   sl.registerLazySingleton<UpdateTaskUseCase>(
-        () => UpdateTaskUseCase(sl()),
+        () => UpdateTaskUseCase(sl<TaskRepository>()),
+  );
+  sl.registerLazySingleton<DeleteTaskUseCase>(
+        () => DeleteTaskUseCase(sl<TaskRepository>()),
   );
 
-  // 3) BLoC
+  // Bloc
   sl.registerFactory<TasksBloc>(
         () => TasksBloc(
-      addTaskUseCase: sl(),
-      fetchTasksUseCase: sl(),
-      updateTaskUseCase: sl(),
+      fetchTasksUseCase: sl<FetchTasksUseCase>(),
+      getTaskUseCase: sl<GetTaskUseCase>(),
+      addTaskUseCase: sl<AddTaskUseCase>(),
+      updateTaskUseCase: sl<UpdateTaskUseCase>(),
+      deleteTaskUseCase: sl<DeleteTaskUseCase>(),
     ),
   );
-
 }

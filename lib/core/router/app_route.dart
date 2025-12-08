@@ -44,10 +44,11 @@ final _routes = GoRouter(
                           path: "details/:id",
                           name: "task-details",
                           builder: (context, state) {
-                            final id = state.pathParameters['id']!;
+                            final idStr = state.pathParameters['id']!;
+                            final taskId = int.tryParse(idStr) ?? -1; // fallback
                             return BlocProvider.value(
                               value: context.read<TasksBloc>(),
-                              child: TaskDetailsScreenByTaskId(taskId: id),
+                              child: TaskDetailsScreenByTaskId(taskId: taskId),
                             );
                           })
                     ])

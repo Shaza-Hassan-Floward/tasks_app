@@ -3,11 +3,11 @@ import 'package:tasks_app/domain/entities/task.dart';
 import '../repo/task_repository.dart';
 
 class FetchTasksUseCase {
-  final TaskRepository taskRepository;
+  final TaskRepository repository;
 
-  FetchTasksUseCase(this.taskRepository);
+  FetchTasksUseCase(this.repository);
 
-  Future<List<TaskEntity>> call() async {
-    return await taskRepository.fetchTasks();
+  Future<List<TaskEntity>> call() {
+    return repository.fetchTasks();
   }
 }

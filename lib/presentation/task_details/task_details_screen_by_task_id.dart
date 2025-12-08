@@ -6,7 +6,7 @@ import '../../core/space/space.dart';
 import '../bloc/tasks_bloc.dart';
 
 class TaskDetailsScreenByTaskId extends StatefulWidget {
-  final String taskId;
+  final int taskId;
 
   const TaskDetailsScreenByTaskId({super.key, required this.taskId});
 
@@ -47,7 +47,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreenByTaskId> {
                 children: [
                   Text(task.title, style: Theme.of(context).textTheme.titleLarge),
                   Space.hMd,
-                  Text(task.description, style: Theme.of(context).textTheme.bodyMedium),
+                  Text(task.description ?? "", style: Theme.of(context).textTheme.bodyMedium),
                   const Spacer(),
                   ElevatedButton(
                     onPressed: () {

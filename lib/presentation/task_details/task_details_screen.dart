@@ -26,7 +26,7 @@ class TaskDetailsScreen extends StatelessWidget {
               ),
             Space.hMd,
             Text(
-                taskEntity.description,
+                taskEntity.description ?? "",
                 style: Theme.of(context).textTheme.bodyMedium
             ),
           ],

@@ -1,29 +1,41 @@
-import 'package:tasks_app/data/local_task_storage.dart';
-
 import '../../domain/entities/task.dart';
 import '../../domain/repo/task_repository.dart';
+import '../data_source/tasks_remote_data_source.dart';
+import '../model/task_model.dart';
 
 class TaskRepositoryImpl implements TaskRepository {
-  @override
-  Future<void> addTask(TaskEntity task) async {
-    LocalTaskStorage.tasks.add(task);
-  }
+  final TasksRemoteDataSource remote;
 
-  @override
-  Future<void> deleteTask(TaskEntity task) async {
-    LocalTaskStorage.tasks.remove(task);
-  }
+  TaskRepositoryImpl({required this.remote});
 
   @override
   Future<List<TaskEntity>> fetchTasks() async {
-    return LocalTaskStorage.tasks;
+    final models = await remote.fetchTasks();
+    return models.map((m) => m.toEntity()).toList();
   }
 
   @override
-  Future<void> updateTask(TaskEntity task) async {
-    final index = LocalTaskStorage.tasks.indexWhere((t) => t.id == task.id);
-    if (index != -1) {
-      LocalTaskStorage.tasks[index] = task;
-    }
+  Future<TaskEntity> getTask(int id) async {
+    final model = await remote.getTask(id);
+    return model.toEntity();
+  }
+
+  @override
+  Future<TaskEntity> addTask(TaskEntity task) async {
+    final model = TaskModel.fromEntity(task);
+    final created = await remote.addTask(model);
+    return created.toEntity();
+  }
+
+  @override
+  Future<TaskEntity> updateTask(TaskEntity task) async {
+    final model = TaskModel.fromEntity(task);
+    final updated = await remote.updateTask(model);
+    return updated.toEntity();
+  }
+
+  @override
+  Future<void> deleteTask(int id) async {
+    await remote.deleteTask(id);
   }
 }

@@ -10,11 +10,12 @@ final class AddTaskEvent extends TasksEvent {
 
   AddTaskEvent({required String title, required String description})
       : task = TaskEntity(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          title: title,
-          description: description,
-          isCompleted: false,
-        );
+    id: DateTime.now().millisecondsSinceEpoch,
+    title: title,
+    description: description,
+    isCompleted: false,
+    userId: 20,
+  );
 }
 
 final class UpdateTaskEvent extends TasksEvent {
@@ -24,6 +25,14 @@ final class UpdateTaskEvent extends TasksEvent {
 }
 
 class LoadSingleTaskEvent extends TasksEvent {
-  final String id;
+  final int id;
   LoadSingleTaskEvent(this.id);
 }
+final class DeleteTaskEvent extends TasksEvent {
+  final int id;
+
+  DeleteTaskEvent(this.id);
+}
+
+final class RefreshTasksEvent extends TasksEvent {}
+
