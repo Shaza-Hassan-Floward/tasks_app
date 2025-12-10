@@ -2,11 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tasks_app/core/router/app_route.dart';
 
 import '../../core/space/app_space.dart';
 import '../../core/space/space.dart';
-import '../bloc/tasks_bloc.dart';
+import '../bloc/tasks_list/tasks_list_bloc.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -80,10 +79,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         print("Description: ${descriptionController.text}");
                       }
 
-                      context.read<TasksBloc>().add(AddTaskEvent(
-                        title: titleController.text,
-                        description: descriptionController.text,
-                      ));
+                    context.read<TasksListBloc>().add(
+                      AddTaskFromFormEvent(
+                        title: titleController.text.trim(),
+                        description: descriptionController.text.trim(),
+                      ),
+                    );
 
                       context.pop();
                   },

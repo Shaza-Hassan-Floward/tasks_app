@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/space/space.dart';
-import '../bloc/tasks_bloc.dart';
+import '../bloc/tasks_list/tasks_list_bloc.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -13,15 +13,15 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Home")),
-      body: BlocBuilder<TasksBloc, TasksState>(
+      body: BlocBuilder<TasksListBloc, TasksListState>(
         builder: (context, state) {
-          if (state is Loading) {
+          if (state is TasksListLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state is TasksError) {
+          if (state is TasksListError) {
             return Center(child: Text(state.message));
           }
-          if (state is TasksLoaded) {
+          if (state is TasksListLoaded) {
             final tasks = state.tasks;
 
             if (tasks.isEmpty) {

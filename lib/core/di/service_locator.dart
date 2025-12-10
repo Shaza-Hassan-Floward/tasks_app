@@ -10,7 +10,8 @@ import '../../domain/usecase/delete_task_usecase.dart';
 import '../../domain/usecase/fetch_tasks_usecase.dart';
 import '../../domain/usecase/get_task_usecase.dart';
 import '../../domain/usecase/update_task_usecase.dart';
-import '../../presentation/bloc/tasks_bloc.dart';
+import '../../presentation/bloc/task_details/task_details_bloc.dart';
+import '../../presentation/bloc/tasks_list/tasks_list_bloc.dart';
 import '../network/dio_client.dart';
 
 final sl = GetIt.instance;
@@ -47,13 +48,17 @@ Future<void> initDependencies() async {
   );
 
   // Bloc
-  sl.registerFactory<TasksBloc>(
-        () => TasksBloc(
+  // Bloc registrations
+  sl.registerFactory<TasksListBloc>(
+        () => TasksListBloc(
       fetchTasksUseCase: sl<FetchTasksUseCase>(),
-      getTaskUseCase: sl<GetTaskUseCase>(),
       addTaskUseCase: sl<AddTaskUseCase>(),
-      updateTaskUseCase: sl<UpdateTaskUseCase>(),
-      deleteTaskUseCase: sl<DeleteTaskUseCase>(),
+    ),
+  );
+
+  sl.registerFactory<TaskDetailsBloc>(
+        () => TaskDetailsBloc(
+      sl<GetTaskUseCase>(),
     ),
   );
 }

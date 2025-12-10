@@ -4,25 +4,23 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tasks_app/core/theme/app_theme.dart';
 
 import 'core/di/service_locator.dart';
 import 'core/router/app_route.dart';
-import 'presentation/bloc/tasks_bloc.dart';
+import 'core/theme/app_theme.dart';
+import 'presentation/bloc/tasks_list/tasks_list_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await initDependencies();
 
   runApp(
     BlocProvider(
-      create: (_) => sl<TasksBloc>()..add(LoadTasksEvent()),
+      create: (_) => sl<TasksListBloc>()..add(const LoadTasksListEvent()),
       child: const MyApp(),
     ),
   );
 }
-
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 

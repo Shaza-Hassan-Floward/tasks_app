@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tasks_app/presentation/task_details/task_details_screen_by_task_id.dart';
 
-import '../../domain/entities/task.dart';
 import '../../presentation/add_task_screen/add_task_screen.dart';
-import '../../presentation/bloc/tasks_bloc.dart';
+import '../../presentation/bloc/task_details/task_details_bloc.dart';
 import '../../presentation/homescreen/home_screen.dart';
 import '../../presentation/settingscreen/setting_screen.dart';
-import '../../presentation/task_details/task_details_screen.dart';
+import '../../presentation/task_details/task_details_screen_by_task_id.dart';
+import '../di/service_locator.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _settingsNavigatorKey = GlobalKey<NavigatorState>();
@@ -25,33 +24,36 @@ final _routes = GoRouter(
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                    path: "/home",
-                    name: "home",
-                    builder: (context, state) => const HomeScreen(),
-                    routes: [
-                      GoRoute(
-                          path: "add-task",
-                          name: "add-task",
-                          builder: (context, state) => const AddTaskScreen()),
-                      // GoRoute(
-                      //     path: "details",
-                      //     name: "task-details",
-                      //     builder: (context, state) {
-                      //       final task = state.extra as TaskEntity;
-                      //       return TaskDetailsScreen(taskEntity: task);
-                      //     }),
-                      GoRoute(
-                          path: "details/:id",
-                          name: "task-details",
-                          builder: (context, state) {
-                            final idStr = state.pathParameters['id']!;
-                            final taskId = int.tryParse(idStr) ?? -1; // fallback
-                            return BlocProvider.value(
-                              value: context.read<TasksBloc>(),
-                              child: TaskDetailsScreenByTaskId(taskId: taskId),
-                            );
-                          })
-                    ])
+                  path: "/home",
+                  name: "home",
+                  builder: (context, state) => const HomeScreen(),
+                  routes: [
+                    GoRoute(
+                      path: "add-task",
+                      name: "add-task",
+                      builder: (context, state) => const AddTaskScreen(),
+                    ),
+                    // GoRoute(
+                    //     path: "details",
+                    //     name: "task-details",
+                    //     builder: (context, state) {
+                    //       final task = state.extra as TaskEntity;
+                    //       return TaskDetailsScreen(taskEntity: task);
+                    //     }),
+                    GoRoute(
+                        path: "details/:id",
+                        name: "task-details",
+                        builder: (context, state) {
+                          final idStr = state.pathParameters['id']!;
+                          final taskId = int.tryParse(idStr) ?? -1; // fallback
+                          return BlocProvider(
+                            create: (_) =>
+                            sl<TaskDetailsBloc>()..add(LoadTaskDetailsEvent(taskId)),
+                            child: TaskDetailsScreenByTaskId(taskId: taskId),
+                          );
+                        }),
+                  ],
+                ),
               ],
             ),
             StatefulShellBranch(navigatorKey: _settingsNavigatorKey, routes: [

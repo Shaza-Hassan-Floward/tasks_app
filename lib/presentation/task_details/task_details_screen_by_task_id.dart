@@ -1,43 +1,31 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tasks_app/presentation/bloc/tasks_list/tasks_list_bloc.dart';
 
 import '../../core/space/space.dart';
-import '../bloc/tasks_bloc.dart';
+import '../bloc/task_details/task_details_bloc.dart';
 
-class TaskDetailsScreenByTaskId extends StatefulWidget {
+class TaskDetailsScreenByTaskId extends StatelessWidget {
   final int taskId;
 
   const TaskDetailsScreenByTaskId({super.key, required this.taskId});
 
   @override
-  State<TaskDetailsScreenByTaskId> createState() => _TaskDetailsScreenState();
-}
-
-class _TaskDetailsScreenState extends State<TaskDetailsScreenByTaskId> {
-  @override
-  void initState() {
-    super.initState();
-
-    // dispatch load
-    context.read<TasksBloc>().add(LoadSingleTaskEvent(widget.taskId));
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Task Details")),
-      body: BlocBuilder<TasksBloc, TasksState>(
+      body: BlocBuilder<TaskDetailsBloc, TaskDetailsState>(
         builder: (context, state) {
-          if (state is Loading) {
+          if (state is TaskDetailsLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (state is TaskDetailError) {
+          if (state is TaskDetailsError) {
             return Center(child: Text(state.message));
           }
 
-          if (state is TaskDetailLoaded) {
+          if (state is TaskDetailsLoaded) {
             final task = state.task;
 
             return Padding(
