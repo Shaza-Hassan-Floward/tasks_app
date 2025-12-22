@@ -3,10 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../presentation/add_task_screen/add_task_screen.dart';
+import '../../presentation/auth/login/login_screen.dart';
+import '../../presentation/auth/regestiration/signup_screen.dart';
+import '../../presentation/auth/start_screen/start_screen.dart';
+import '../../presentation/bloc/auth/auth_bloc.dart';
 import '../../presentation/bloc/task_details/task_details_bloc.dart';
 import '../../presentation/homescreen/home_screen.dart';
 import '../../presentation/settingscreen/setting_screen.dart';
 import '../../presentation/task_details/task_details_screen_by_task_id.dart';
+import '../auth/auth_notifier.dart';
 import '../di/service_locator.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -14,8 +19,34 @@ final _settingsNavigatorKey = GlobalKey<NavigatorState>();
 
 final _routes = GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: "/home",
+    initialLocation: '/start',
+    refreshListenable: sl<AuthNotifier>(),
+    redirect: authRedirect,
     routes: [
+      GoRoute(
+        path: '/start',
+        name: 'start',
+        builder: (_, __) => const StartScreen(),
+        routes: [
+          GoRoute(
+            path: 'signup',
+            name: "signup",
+            builder: (context, state) => BlocProvider(
+              create: (_) => sl<AuthBloc>(),
+              child: const SignUpScreen(),
+            ),
+          ),
+          GoRoute(
+            path: "login",
+            name: "login",
+            builder: (context, state) => BlocProvider(
+                create: (_) => sl<AuthBloc>(),
+                child: const LoginScreen()
+            ),
+          ),
+        ]
+      ),
+
       StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
             return ScaffoldWithNavbar(navigationShell);
@@ -72,11 +103,9 @@ class ScaffoldWithNavbar extends StatelessWidget {
 
   /// The navigation shell and container for the branch Navigators.
   final StatefulNavigationShell navigationShell;
-  static late StatefulNavigationShell shell; // ADD THIS
 
   @override
   Widget build(BuildContext context) {
-    shell = navigationShell; // STORE IT
 
     return Scaffold(
       body: navigationShell,
@@ -97,4 +126,26 @@ class ScaffoldWithNavbar extends StatelessWidget {
       initialLocation: index == navigationShell.currentIndex,
     );
   }
+}
+
+String? authRedirect(BuildContext context, GoRouterState state) {
+  final auth = sl<AuthNotifier>();
+  final loggedIn = auth.isLoggedIn;
+
+  final location = state.matchedLocation;
+
+  final isAuthRoute = location.startsWith('/start');
+
+
+  // 🔒 Not logged in → force auth flow
+  if (!loggedIn && !isAuthRoute) {
+    return '/start';
+  }
+
+  // ✅ Logged in → block auth pages
+  if (loggedIn && isAuthRoute) {
+    return '/home';
+  }
+
+  return null;
 }

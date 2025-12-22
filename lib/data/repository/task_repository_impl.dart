@@ -36,7 +36,7 @@ class TaskRepositoryImpl implements TaskRepository {
 
       final model = await remote.getTask(id);
       final entity = model.toEntity();
-      _cache = [...?_cache ?? [], entity];
+      _cache = [..._cache ?? [], entity];
       return entity;
     } on Failure {
       rethrow;
@@ -51,7 +51,7 @@ class TaskRepositoryImpl implements TaskRepository {
       final model = TaskModel.fromEntity(task);
       final created = await remote.addTask(model);
       final entity = created.toEntity();
-      _cache = [...?_cache ?? [], entity];
+      _cache = [..._cache ?? [], entity];
       return entity;
     } on Failure {
       rethrow;

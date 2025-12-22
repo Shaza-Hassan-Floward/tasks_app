@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "511259945206",
+    "project_id": "flutter-study-99fcb",
+    "storage_bucket": "flutter-study-99fcb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:511259945206:android:d5dc803197096895e2a4d7",
+        "android_client_info": {
+          "package_name": "com.example.tasks_app.tasks_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyxdKbRoUKknQm_JXrSoZA8zXanSd5d9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

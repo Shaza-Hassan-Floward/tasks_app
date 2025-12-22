@@ -44,7 +44,7 @@ class TasksListBloc extends Bloc<TasksListEvent, TasksListState> {
     if (current is! TasksListLoaded) {
       // if list not loaded, just try and reload everything
       try {
-        final entity = await addTaskUseCase(event.toEntity());
+        final _ = await addTaskUseCase(event.toEntity());
         final tasks = await fetchTasksUseCase();
         emit(TasksListLoaded(tasks));
       } on Failure catch (f) {

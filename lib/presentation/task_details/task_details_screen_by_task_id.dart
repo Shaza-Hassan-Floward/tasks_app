@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tasks_app/presentation/bloc/tasks_list/tasks_list_bloc.dart';
 
 import '../../core/space/space.dart';
 import '../bloc/task_details/task_details_bloc.dart';

@@ -1,5 +1,7 @@
 
 import 'package:app_links/app_links.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,15 +10,26 @@ import 'package:go_router/go_router.dart';
 import 'core/di/service_locator.dart';
 import 'core/router/app_route.dart';
 import 'core/theme/app_theme.dart';
+import 'presentation/bloc/auth/auth_bloc.dart';
 import 'presentation/bloc/tasks_list/tasks_list_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await initDependencies();
 
   runApp(
-    BlocProvider(
-      create: (_) => sl<TasksListBloc>()..add(const LoadTasksListEvent()),
+      MultiBlocProvider(
+      providers: [
+        BlocProvider<TasksListBloc>(
+          create: (_) => sl<TasksListBloc>()..add(const LoadTasksListEvent()),
+        ),
+        BlocProvider<AuthBloc>(
+          create: (_) => sl<AuthBloc>(),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
@@ -54,18 +67,12 @@ class _MyAppState extends State<MyApp> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      final path = uri.path;  // e.g. /home/add-task
+      final path = uri.path; // e.g. /home/add-task
 
-      // Determine correct branch
-      final branchIndex = path.startsWith("/settings") ? 1 : 0;
-      //
-      // // Switch shell branch first
-      ScaffoldWithNavbar.shell.goBranch(branchIndex);
-      if(kDebugMode) {
-        print("Navigating to branch for path $path");
+      if (kDebugMode) {
+        print("Deep link → $path");
       }
 
-      // Then navigate inside that branch
       context.go(path);
     });
   }
