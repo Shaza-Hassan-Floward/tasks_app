@@ -1,8 +1,8 @@
 import '../../domain/entities/task.dart';
 import '../../domain/error/failures.dart';
 import '../../domain/repo/task_repository.dart';
-import '../data_source/tasks_remote_data_source.dart';
 import '../model/task_model.dart';
+import '../tasks_data_source/tasks_remote_data_source.dart';
 
 class TaskRepositoryImpl implements TaskRepository {
   final TasksRemoteDataSource remote;

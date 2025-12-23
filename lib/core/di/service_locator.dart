@@ -6,9 +6,12 @@ import 'package:get_it/get_it.dart';
 
 import '../../data/auth/auth_remote_data_source.dart';
 import '../../data/auth/auth_repository_impl.dart';
-import '../../data/data_source/tasks_remote_data_source.dart';
+import '../../data/repository/task_firestore_repository_impl.dart';
 import '../../data/repository/task_repository_impl.dart';
+import '../../data/tasks_data_source/task_firestore_remote_data_source.dart';
+import '../../data/tasks_data_source/tasks_remote_data_source.dart';
 import '../../domain/repo/auth_repository.dart';
+import '../../domain/repo/task_firestore_repository.dart';
 import '../../domain/repo/task_repository.dart';
 import '../../domain/usecase/add_task_usecase.dart';
 import '../../domain/usecase/delete_task_usecase.dart';
@@ -97,4 +100,16 @@ Future<void> initDependencies() async {
       loginUseCase: sl()
   ));
 
+  sl.registerLazySingleton<TaskFirestoreRemoteDataSource>(
+        () => TaskFirestoreRemoteDataSourceImpl(
+          sl<FirebaseFirestore>(),
+          sl<FirebaseAuth>(),
+    ),
+  );
+
+  sl.registerLazySingleton<TaskFireStoreRepository>(
+        () => TaskFirestoreRepositoryImpl(
+          sl<TaskFirestoreRemoteDataSource>(),
+    ),
+  );
 }
